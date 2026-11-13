@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Genesys Cloud Pre-Queue Survey Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #FAF7F6; --navy: #122550; --navy-deep: #0C1B3E; --orange: #FF5618; --orange-ink: #C93D0C; --amber: #FF9002;
+    --cyan: #69CEEA; --green: #5EC553; --green-ink: #1E7A32; --blue: #2B4E9A; --mute: #56627F; --line: #E7E1DE;
+    --red: #B42318; --red-bg: #FEF3F2;
+    --grad: linear-gradient(105deg, #FF9A00 0%, #FF5A1A 50%, #F5530F 60%, #5BCBEE 100%);
+    --ring: linear-gradient(135deg, #FF9002, #FF5618 55%, #69CEEA);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; color: var(--navy); background: var(--paper); font-family: 'Mulish', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+
+  .app { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: 100vh; }
+
+  /* ---- navy rail ---- */
+  .rail { background: var(--navy); color: #EAEEF5; padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 14px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+  .logo { background: var(--paper); border-radius: 14px; padding: 12px 14px; display: flex; justify-content: center; }
+  .logo img { display: block; height: 33px; width: auto; }
+  .appname { font-weight: 800; font-size: 18px; letter-spacing: -.01em; color: #fff; padding: 2px 4px 0; }
+  .org { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: rgba(94,197,83,.18); color: #BDF2B6; font-size: 13.5px; font-weight: 700; }
+  .org::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(94,197,83,.3); }
+  .field { display: grid; gap: 5px; min-width: 0; }
+  .field > span { font-size: 13px; font-weight: 700; color: #C9D2E6; }
+  .rail input[type=text], .rail select { font: inherit; font-size: 14px; padding: 10px 13px; border-radius: 12px; width: 100%; color: #fff; background: rgba(255,255,255,.08); border: 1.5px solid rgba(255,255,255,.2); }
+  .rail select option { color: var(--navy); }
+  .rail input:disabled, .rail select:disabled { opacity: .75; }
+  .railnote { margin: 0; font-size: 12px; color: #A9B6D3; line-height: 1.45; }
+  .railnote code { display: block; margin-top: 4px; background: rgba(255,255,255,.08); color: #E3E9F7; padding: 5px 8px; border-radius: 8px; word-break: break-all; user-select: all; font-size: 11.5px; }
+  .redir { margin-top: auto; }
+
+  /* ---- buttons ---- */
+  .btn { font: inherit; font-size: 14px; font-weight: 800; padding: 11px 20px; border-radius: 999px; cursor: pointer; white-space: nowrap; border: 2px solid transparent; color: var(--navy); background: #fff; transition: transform .12s, box-shadow .12s; }
+  .btn:hover:not(:disabled) { transform: translateY(-1px); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; filter: saturate(.5); }
+  .btn.primary { background: var(--grad); color: #fff; text-shadow: 0 1px 2px rgba(18,37,80,.4); border-color: #fff; box-shadow: 0 0 0 2px rgba(255,86,24,.28), 0 8px 18px rgba(255,86,24,.35); }
+  .btn.primary:hover:not(:disabled) { box-shadow: 0 0 0 2px rgba(255,86,24,.5), 0 10px 22px rgba(255,86,24,.45); }
+  .rail .btn { width: 100%; white-space: normal; line-height: 1.25; }
+  .rail .btn:not(.primary) { background: transparent; color: #fff; border-color: rgba(255,255,255,.6); }
+  .content .btn:not(.primary) { background: #fff; border-color: var(--navy); }
+  .btn.small { padding: 7px 14px; font-size: 12.5px; }
+
+  /* ---- flow types ---- */
+  .types { margin-top: 2px; }
+  .types-head { width: 100%; text-align: left; font: inherit; font-size: 13px; font-weight: 800; background: none; border: 0; padding: 6px 4px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: #C9D2E6; }
+  .types-head .chev { font-size: 10px; }
+  .types ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 4px; }
+  .types li button { width: 100%; text-align: left; font: inherit; font-size: 14px; font-weight: 600; padding: 9px 14px; border-radius: 999px; cursor: pointer; color: #EAEEF5; background: none; border: 2px solid transparent; }
+  .types li button:hover { background: rgba(255,255,255,.09); }
+  .types li button[aria-current=true] { background: var(--grad); color: #fff; font-weight: 800; border-color: #fff; text-shadow: 0 1px 2px rgba(18,37,80,.4); box-shadow: 0 0 0 2px rgba(255,86,24,.35), 0 8px 18px rgba(255,86,24,.4); }
+
+  /* ---- content ---- */
+  .content { padding: 22px 26px 30px; min-width: 0; display: grid; gap: 14px; align-content: start; }
+  .msg { padding: 12px 16px; border-radius: 14px; font-size: 14px; border: 1px solid; white-space: pre-wrap; word-break: break-word; }
+  .msg.error { background: var(--red-bg); color: var(--red); border-color: #FECDCA; }
+  .msg.info { background: #EFF6FF; color: #1E429F; border-color: #BFDBFE; }
+  .msg.warn { background: #FFFAEB; color: #B54708; border-color: #FEDF89; }
+  .welcome { display: grid; gap: 8px; place-content: center; text-align: center; min-height: 60vh; }
+  .welcome h2 { margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+  .welcome p { margin: 0 auto; color: var(--mute); max-width: 46ch; }
+  .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
+  @media (max-width: 1250px) { .workspace { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) { .app { grid-template-columns: 1fr; } .rail { position: static; height: auto; } }
+
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+  .flows-title { margin: 0 0 4px; font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .flows-bar { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .flows-bar input[type=text] { font: inherit; font-size: 14px; padding: 9px 15px; border-radius: 999px; border: 1.5px solid var(--line); width: 100%; max-width: 340px; color: var(--navy); }
+  .flows-bar .count { margin-left: auto; font-size: 13px; color: var(--mute); font-weight: 700; }
+  .tablewrap { max-height: calc(100vh - 210px); min-height: 200px; overflow: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th { position: sticky; top: 0; background: #fff; text-align: left; font-weight: 800; padding: 11px 14px; border-bottom: 2px solid var(--line); z-index: 1; }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tbody tr:nth-child(even) { background: #F6F2F0; }
+  tbody tr.sel { background: #FFEBE2; box-shadow: inset 4px 0 0 var(--orange); }
+  td.name { color: var(--blue); font-weight: 700; word-break: break-word; }
+  td.desc { color: var(--mute); max-width: 320px; word-break: break-word; }
+  th.chk, td.chk { width: 44px; padding-right: 0; }
+  input[type=checkbox] { width: 17px; height: 17px; accent-color: #E8501A; cursor: pointer; vertical-align: -3px; }
+  .dtype input[type=checkbox], .deps-head input[type=checkbox] { flex: none; }
+  .vacol { white-space: nowrap; }
+  .vab { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 800; padding: 3px 11px; border-radius: 999px; white-space: nowrap; }
+  .vab.on { background: #E3F6EC; color: #176B43; }
+  .vab.off { background: #EEF0F6; color: #56627F; }
+  .vab.err { background: #FEF3F2; color: #B42318; }
+  .vab.pend { background: none; color: var(--mute); font-weight: 600; padding-left: 0; }
+  .vaprog { font-size: 12.5px; color: var(--mute); font-weight: 600; }
+  .empty { padding: 36px 16px; text-align: center; color: var(--mute); font-size: 14px; }
+
+  /* ---- export side ---- */
+  .side { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 14px; position: sticky; top: 16px; }
+  .side h2 { margin: 0; font-size: 18px; font-weight: 800; }
+  .side-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+  .side-actions .btn { padding: 12px 8px; white-space: normal; line-height: 1.2; }
+  .progress { grid-column: 1 / -1; font-size: 13px; color: var(--mute); min-height: 0; }
+  .progress:empty { display: none; }
+  .side .note { font-size: 12.5px; color: var(--mute); margin: 0; line-height: 1.5; }
+  .side code { background: #EEF1F8; padding: 1px 5px; border-radius: 5px; }
+  .deps-head { display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; }
+  .deps-head > label { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 800; }
+  .deps-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .flowdeps { border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; background: #fff; overflow: hidden; }
+  .flowdeps > h3 { margin: 0; padding: 10px 14px; font-size: 13.5px; border-bottom: 1px solid var(--line); background: #F7F4F2; word-break: break-word; }
+  .flowdeps > .err { padding: 10px 14px; font-size: 13px; color: var(--red); }
+  .flowdeps > .none { padding: 10px 14px; font-size: 13px; color: var(--mute); }
+  .dtype { padding: 6px 12px 6px 6px; border-bottom: 1px solid var(--line); }
+  .dtype:last-child { border-bottom: 0; }
+  .dtype-head { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 700; }
+  .dtype-head label { display: flex; align-items: center; gap: 9px; cursor: pointer; flex: 1; font-weight: inherit; }
+  .dtype-head .n { margin-left: auto; font-weight: 800; color: var(--navy); font-size: 12px; background: #EEF1F8; border-radius: 999px; padding: 2px 9px; }
+  .dtype.zero .dtype-head { color: var(--mute); font-weight: 600; }
+  .dtype.zero .oi { opacity: .45; filter: grayscale(.6); }
+  .dtype ul { margin: 4px 0 6px 58px; padding: 0; list-style: none; font-size: 13px; display: grid; gap: 5px; }
+  .dtype li { word-break: break-word; }
+  .dtype li label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
+  .dtype li.deleted { color: var(--mute); text-decoration: line-through; }
+  .tkopt { display: flex; align-items: center; gap: 8px; color: var(--blue); font-weight: 800; }
+  .tkopt .tklbl { flex: 1; }
+  .tki { width: 17px; height: 17px; display: inline-grid; place-items: center; flex: none; color: var(--blue); }
+  .tki svg { width: 16px; height: 16px; fill: #E5ECFB; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sw { width: 34px; height: 18px; border-radius: 999px; border: 0; background: #C9D0E2; position: relative; cursor: pointer; flex: none; transition: background .15s; padding: 0; }
+  .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(18,37,80,.35); transition: transform .15s; }
+  .sw[aria-checked=true] { background: var(--grad); }
+  .sw[aria-checked=true]::after { transform: translateX(16px); }
+  .dtype li.task { display: block; }
+  .tkrow { display: flex; align-items: center; gap: 6px; color: var(--blue); font-weight: 800; }
+  .dtype .tkrow label { display: flex; align-items: center; gap: 8px; flex: 1; cursor: pointer; font-weight: 800; color: var(--blue); }
+  .tkn { font-size: 11.5px; font-weight: 800; background: #E5ECFB; color: var(--blue); border-radius: 999px; padding: 1px 9px; }
+  .twisty.small { width: 20px; height: 20px; font-size: 9px; margin-left: -4px; }
+  .dtype ul.tkitems { margin: 5px 0 3px 26px; gap: 5px; }
+  .twisty { font: inherit; font-size: 10px; width: 24px; height: 24px; border: 0; background: none; color: var(--mute); border-radius: 6px; cursor: pointer; flex: none; }
+  .twisty:hover:not(:disabled) { background: #EEF1F8; color: var(--navy); }
+  .twisty:disabled { opacity: .3; cursor: default; }
+
+  /* ---- object-type icon: white ring badge, gradient rim, orange glyph, cyan accent ---- */
+  .oi { width: 30px; height: 30px; flex: none; display: inline-grid; place-items: center; border-radius: 50%; border: 2px solid transparent;
+    background: linear-gradient(#fff, #fff) padding-box, var(--ring) border-box; box-shadow: 0 2px 7px rgba(18,37,80,.2); }
+  .oi svg { width: 16px; height: 16px; fill: none; stroke: var(--orange); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .oi svg .ac { fill: #37B5E0; stroke: none; }
+
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid #C7D2FE; border-top-color: var(--orange); border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } .btn { transition: none; } }
+
+  /* ---- additions for the interaction view ---- */
+  .workspace { grid-template-columns: minmax(0, 1fr) 360px; }
+  @media (max-width: 1250px) { .workspace { grid-template-columns: 1fr; } }
+  .side input[type=text], .side select { font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 12px; width: 100%; color: var(--navy); background: #fff; border: 1.5px solid var(--line); }
+  .side .field > span { color: var(--navy); }
+  .side .btn.primary { width: 100%; }
+  .side .btn:not(.primary) { background: #fff; border-color: var(--navy); width: 100%; }
+  .dlbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .log { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 12.5px; color: var(--mute); }
+  .log:empty { display: none; }
+  .log li.ok { color: var(--green-ink); font-weight: 700; }
+  .log li.bad { color: var(--red); font-weight: 700; }
+  .sumbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 2px 0 12px; }
+  .chip { font: inherit; font-size: 13px; font-weight: 800; padding: 7px 15px; border-radius: 999px; border: 2px solid var(--navy); background: #fff; color: var(--navy); cursor: pointer; }
+  .chip[aria-pressed=true] { background: var(--grad); color: #fff; border-color: #fff; text-shadow: 0 1px 2px rgba(18,37,80,.4); box-shadow: 0 0 0 2px rgba(255,86,24,.35), 0 6px 14px rgba(255,86,24,.35); }
+  .meta { font-size: 13px; color: var(--mute); font-weight: 600; margin: 0 0 12px; word-break: break-word; }
+  .meta strong { color: var(--navy); }
+  td.ord { color: var(--mute); font-weight: 800; width: 48px; }
+  td.time { white-space: nowrap; font-variant-numeric: tabular-nums; }
+  td.time small { display: block; color: var(--mute); font-size: 11.5px; }
+  td.nm { font-weight: 700; color: var(--blue); word-break: break-word; }
+  td.nm small { display: block; color: var(--mute); font-weight: 500; font-size: 11.5px; word-break: break-all; }
+  td.nm .unres { color: var(--orange-ink); font-weight: 700; }
+  .kind { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; white-space: nowrap; }
+  .kind .oi { width: 26px; height: 26px; }
+  .vab.succ { background: #E3F6EC; color: #176B43; }
+  .vab.fail { background: #FEF3F2; color: #B42318; }
+  .tablewrap { max-height: calc(100vh - 300px); }
+  .fnote { color: var(--mute); font-size: 12px; }
+  .sumbar .spacer { margin-left: auto; display: flex; gap: 8px; }
+  tr.grp td { background: #fff; }
+  tr.grp.open td { background: #FFF6F1; }
+  tr.child td { background: #F7FAFD; border-bottom: 1px solid #E3EAF4; }
+  tr.child td:first-child { box-shadow: inset 4px 0 0 var(--cyan); }
+  tr.child td.nm { padding-left: 34px; }
+  tr.child .oi { width: 24px; height: 24px; }
+  tr.child .kind { padding-left: 22px; color: var(--blue); }
+  .kind .twisty { width: 24px; height: 24px; font-size: 11px; color: var(--navy); background: #EEF1F8; border-radius: 50%; }
+  .kind .twisty:hover:not(:disabled) { background: #FFE1D4; }
+  .kind .tw-sp { display: inline-block; width: 24px; flex: none; }
+  .tkn.ms { margin-left: 6px; white-space: nowrap; }
+  .vab.none { background: #FFFAEB; color: #B54708; }
+  .modebar { margin: 0 0 14px; }
+  .drop { display: block; border: 2px dashed var(--navy); border-radius: 14px; padding: 18px 14px; text-align: center; cursor: pointer; background: #fff; transition: background .15s; }
+  .drop:hover, .drop.over { background: #FFF6F1; border-color: var(--orange); }
+  .drop strong { display: block; color: var(--navy); font-size: 14px; }
+  .drop span { color: var(--mute); font-size: 12px; }
+  .bar { height: 10px; border-radius: 999px; background: #E3EAF4; overflow: hidden; margin: 10px 0 4px; }
+  .bar > div { height: 100%; width: 0; background: var(--grad); transition: width .25s; }
+  #btable td, #btable th { white-space: nowrap; font-size: 12.5px; }
+  #btable th { white-space: normal; min-width: 110px; vertical-align: bottom; }
+  #btable td:first-child, #btable th:first-child { position: sticky; left: 0; z-index: 2; background: #fff; min-width: 290px; box-shadow: 2px 0 0 #E3EAF4; }
+  #btable td.id button { font: inherit; font-weight: 700; color: var(--blue); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+  #btable td.st { font-weight: 700; }
+  #btable td.st.bad { color: var(--red); } #btable td.st.warn { color: var(--orange-ink); } #btable td.st.good { color: var(--green-ink); }
+  .vtok { display: inline-block; font-weight: 800; font-size: 11.5px; padding: 2px 8px; border-radius: 999px; margin-right: 4px; background: #EEF1F8; color: var(--navy); }
+
+  /* ---- Pre-Queue Survey additions ---- */
+  :root { --s1: #E5484D; --s2: #F7862B; --s3: #F5B700; --s4: #8FCB4F; --s5: #2FA84F; --s0: #8A93AB; }
+  .workspace { grid-template-columns: minmax(0, 1fr); }
+  .toolbar { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: end; }
+  .toolbar .field { min-width: 150px; }
+  .toolbar .field > span { font-size: 12.5px; font-weight: 800; color: var(--mute); }
+  .toolbar input[type=date] { font: inherit; font-size: 14px; padding: 9px 12px; border-radius: 12px; border: 1.5px solid var(--line); color: var(--navy); background: #fff; }
+  .presets { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toolbar .grow { flex: 1; }
+  .btn.primary.go { padding: 11px 26px; }
+
+  .hero { display: grid; grid-template-columns: minmax(260px, 1.1fr) minmax(0, 2fr); gap: 16px; }
+  @media (max-width: 1000px) { .hero { grid-template-columns: 1fr; } }
+  .offered { background: var(--navy); color: #fff; border-radius: 22px; padding: 22px 24px; position: relative; overflow: hidden; display: grid; gap: 6px; align-content: center; }
+  .offered::after { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: var(--grad); opacity: .35; }
+  .offered .lbl { font-size: 13px; font-weight: 800; color: #C9D2E6; letter-spacing: .04em; text-transform: uppercase; }
+  .offered .big { font-size: 64px; font-weight: 800; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .offered .sub { font-size: 13px; color: #C9D2E6; }
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 700px) { .kpis { grid-template-columns: 1fr; } }
+  .kpi { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; display: grid; gap: 4px; align-content: center; }
+  .kpi .lbl { font-size: 12.5px; font-weight: 800; color: var(--mute); text-transform: uppercase; letter-spacing: .04em; }
+  .kpi .val { font-size: 34px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .kpi .hint { font-size: 12px; color: var(--mute); }
+
+  .dist { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; display: grid; gap: 10px; }
+  .dist h2 { margin: 0; font-size: 16px; font-weight: 800; }
+  .stack { display: flex; height: 22px; border-radius: 999px; overflow: hidden; background: #EEF1F8; }
+  .stack > div { height: 100%; min-width: 0; transition: width .4s; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--mute); font-weight: 700; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+
+  .scores { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 1100px) { .scores { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .scores { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .score { --c: var(--s0); font: inherit; text-align: left; cursor: pointer; background: #fff; border: 2px solid var(--line); border-radius: 20px; padding: 16px 16px 14px; display: grid; gap: 6px; color: var(--navy); position: relative; overflow: hidden; transition: transform .12s, box-shadow .12s, border-color .12s; }
+  .score:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(18,37,80,.12); border-color: var(--c); }
+  .score:disabled { cursor: default; opacity: .8; }
+  .score::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 6px; background: var(--c); }
+  .score[aria-pressed=true] { border-color: var(--c); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 28%, transparent), 0 10px 22px rgba(18,37,80,.12); }
+  .score .star { font-size: 13px; font-weight: 800; color: var(--c); letter-spacing: .02em; display: flex; justify-content: space-between; align-items: center; }
+  .score .stars { letter-spacing: 1px; font-size: 12px; }
+  .score .n { font-size: 38px; font-weight: 800; letter-spacing: -.02em; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .score .pct { font-size: 12.5px; color: var(--mute); font-weight: 700; }
+  .score .meter { height: 6px; border-radius: 999px; background: #EEF1F8; overflow: hidden; }
+  .score .meter > i { display: block; height: 100%; background: var(--c); border-radius: 999px; transition: width .4s; }
+  .score .go { font-size: 11.5px; font-weight: 800; color: var(--c); }
+  .s1 { --c: var(--s1); } .s2 { --c: var(--s2); } .s3 { --c: var(--s3); } .s4 { --c: var(--s4); } .s5 { --c: var(--s5); } .s0 { --c: var(--s0); }
+  .s3 .star, .s3 .go { color: #A67C00; }
+
+  .drill .head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+  .drill .head h2 { margin: 0; font-size: 18px; font-weight: 800; }
+  .drill .head .pill { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+  .drill .head .sp { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .drill .tablewrap { max-height: 520px; }
+  td.cid { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; word-break: break-all; min-width: 280px; }
+  td.cid button { font: inherit; background: none; border: 0; color: var(--navy); cursor: pointer; padding: 0 0 0 6px; opacity: .6; }
+  td.cid button:hover { opacity: 1; }
+  a.lnk { color: var(--blue); font-weight: 800; text-decoration: none; white-space: nowrap; }
+  a.lnk:hover { text-decoration: underline; }
+  .acts { display: flex; gap: 10px; align-items: center; white-space: nowrap; }
+  .linkbtn { font: inherit; font-weight: 800; color: var(--blue); background: none; border: 0; padding: 0; cursor: pointer; }
+  .linkbtn:hover { text-decoration: underline; }
+  .search { font: inherit; font-size: 13.5px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--navy); width: 220px; }
+  .tx { background: #F7FAFD; }
+  .tx td { padding: 12px 18px 16px 34px; }
+  .tx .line { display: grid; grid-template-columns: 90px 1fr; gap: 10px; padding: 3px 0; font-size: 13px; }
+  .tx .who { font-weight: 800; color: var(--blue); }
+  .tx .who.customer { color: var(--orange-ink); }
+  .tx .none { color: var(--mute); font-size: 13px; }
+  .stat { font-size: 12.5px; color: var(--mute); font-weight: 700; }
+  .banner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .setup { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; font-size: 13.5px; color: var(--mute); line-height: 1.55; }
+  .setup code { background: #EEF1F8; color: var(--navy); padding: 1px 6px; border-radius: 5px; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail" aria-label="Connection">
+    <div class="logo"><img alt="Genesys" width="129" height="33" src="data:image/png;base64,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" /></div>
+    <div class="appname">Pre-Queue Survey Results</div>
+    <div class="org" id="orgBadge" hidden>Org: <strong id="orgName"></strong></div>
+    <label class="field"><span>Genesys Cloud region</span><select id="region"></select></label>
+    <label class="field"><span>OAuth client ID</span>
+      <input type="text" id="clientId" placeholder="Paste the PKCE OAuth client ID" autocomplete="off" spellcheck="false" /></label>
+    <button class="btn primary" id="authBtn" type="button">Sign in to Genesys Cloud</button>
+    <p class="railnote">Region and client ID are retained in this browser; the access token is session-only.</p>
+    <p class="railnote">The OAuth client needs read access to analytics (flow aggregates and conversation details) and Architect flows (outcomes and milestones). For in-app transcripts it also needs speech and text analytics read access.</p>
+    <p class="railnote redir">Redirect URI to register on the OAuth client:<code id="redirectUri"></code></p>
+  </aside>
+
+  <div class="content">
+    <div id="msg" role="alert" hidden></div>
+
+    <section class="welcome" id="welcome">
+      <h2>Connect to a Genesys Cloud org</h2>
+      <p>Choose a region, paste the PKCE client ID and sign in. You can then see how many calls were offered the pre-queue survey and how customers scored it, for any date range.</p>
+    </section>
+
+    <main class="workspace" id="workspace" hidden style="display:none">
+      <div style="display:grid;gap:14px;min-width:0">
+        <h1 class="flows-title" style="margin:0">Pre-queue survey results</h1>
+
+        <section class="toolbar" aria-label="Date range">
+          <div class="field"><span>Quick range</span>
+            <div class="presets" id="presets">
+              <button class="chip" type="button" data-p="today" aria-pressed="false">Today</button>
+              <button class="chip" type="button" data-p="yesterday" aria-pressed="false">Yesterday</button>
+              <button class="chip" type="button" data-p="7" aria-pressed="true">Last 7 days</button>
+              <button class="chip" type="button" data-p="30" aria-pressed="false">Last 30 days</button>
+              <button class="chip" type="button" data-p="month" aria-pressed="false">This month</button>
+              <button class="chip" type="button" data-p="lastmonth" aria-pressed="false">Last month</button>
+            </div>
+          </div>
+          <label class="field"><span>From</span><input type="date" id="fromDate" /></label>
+          <label class="field"><span>To (inclusive)</span><input type="date" id="toDate" /></label>
+          <button class="btn primary go" id="goBtn" type="button">Show results</button>
+          <span class="stat" id="status"></span>
+        </section>
+
+        <div class="msg info" id="notes" hidden></div>
+
+        <section id="dash" hidden style="display:grid;gap:14px">
+          <div class="hero">
+            <div class="offered">
+              <div class="lbl">Calls offered the survey</div>
+              <div class="big" id="offeredN">0</div>
+              <div class="sub" id="rangeLbl"></div>
+            </div>
+            <div class="kpis">
+              <div class="kpi"><div class="lbl">Response rate</div><div class="val" id="kRate">–</div><div class="hint" id="kRateH"></div></div>
+              <div class="kpi"><div class="lbl">Average score</div><div class="val" id="kAvg">–</div><div class="hint">out of 5 (5 = high)</div></div>
+              <div class="kpi"><div class="lbl">Positive (4–5)</div><div class="val" id="kPos">–</div><div class="hint" id="kPosH"></div></div>
+            </div>
+          </div>
+
+          <div class="dist">
+            <h2>Outcome of each offered survey</h2>
+            <div class="stack" id="stack" role="img" aria-label="Distribution of survey outcomes"></div>
+            <div class="legend" id="legend"></div>
+          </div>
+
+          <div>
+            <div class="sumbar" style="margin-bottom:8px"><strong>Select a score to see the individual interactions</strong></div>
+            <div class="scores" id="scores"></div>
+          </div>
+
+          <div class="msg warn" id="recon" hidden></div>
+        </section>
+
+        <section class="card drill" id="drill" hidden>
+          <div class="head">
+            <h2 id="drillTitle"></h2>
+            <span class="stat" id="drillStat"></span>
+            <span class="sp">
+              <input class="search" id="drillSearch" type="text" placeholder="Filter by ID or number" autocomplete="off" />
+              <button class="btn small" id="drillCsv" type="button" disabled>Download CSV</button>
+              <button class="btn small" id="drillClose" type="button">Close</button>
+            </span>
+          </div>
+          <div class="tablewrap">
+            <table>
+              <thead><tr><th>Started</th><th>Interaction ID</th><th>Direction</th><th>From (ANI)</th><th>To (DNIS)</th><th>Duration</th><th>Open</th></tr></thead>
+              <tbody id="drillRows"></tbody>
+            </table>
+            <div class="empty" id="drillEmpty" hidden></div>
+          </div>
+        </section>
+
+        <section class="setup" id="setup" hidden></section>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- constants ---------- */
+const REGIONS = [
+  ['eu-west-1 (Ireland)', 'mypurecloud.ie'],
+  ['eu-west-2 (London)', 'euw2.pure.cloud'],
+  ['eu-central-1 (Frankfurt)', 'mypurecloud.de'],
+  ['eu-central-2 (Zurich)', 'euc2.pure.cloud'],
+  ['me-central-1 (UAE)', 'mec1.pure.cloud'],
+  ['ap-south-1 (Mumbai)', 'aps1.pure.cloud'],
+  ['us-east-1 (N. Virginia)', 'mypurecloud.com'],
+  ['us-east-2 (Ohio, FedRAMP)', 'use2.us-gov-pure.cloud'],
+  ['us-west-2 (Oregon)', 'usw2.pure.cloud'],
+  ['ca-central-1 (Canada)', 'cac1.pure.cloud'],
+  ['sa-east-1 (São Paulo)', 'sae1.pure.cloud'],
+  ['ap-southeast-2 (Sydney)', 'mypurecloud.com.au'],
+  ['ap-northeast-1 (Tokyo)', 'mypurecloud.jp'],
+  ['ap-northeast-2 (Seoul)', 'apne2.pure.cloud'],
+  ['ap-northeast-3 (Osaka)', 'apne3.pure.cloud'],
+];
+const OUTCOME_NAME = 'Pre-Queue_Survey_Undertaken';
+const MS = {
+  offered: 'PreQueueSurvey_Offered',
+  none: 'PreQueueSurvey_NoResponse',
+  1: 'PreQueueSurvey_Score_1', 2: 'PreQueueSurvey_Score_2', 3: 'PreQueueSurvey_Score_3',
+  4: 'PreQueueSurvey_Score_4', 5: 'PreQueueSurvey_Score_5',
+};
+const KEYS = ['1', '2', '3', '4', '5', 'none'];
+const LABEL = { 1: 'Score 1 (low)', 2: 'Score 2', 3: 'Score 3', 4: 'Score 4', 5: 'Score 5 (high)', none: 'No response' };
+const COLOR = { 1: 'var(--s1)', 2: 'var(--s2)', 3: 'var(--s3)', 4: 'var(--s4)', 5: 'var(--s5)', none: 'var(--s0)' };
+const K = { cfg: 'gcPreQueueSurvey.config.v1', token: 'gcPreQueueSurvey.token.v1', verifier: 'gcPreQueueSurvey.verifier.v1', state: 'gcPreQueueSurvey.state.v1' };
+const REDIRECT_URI = location.origin + location.pathname;
+const GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const DAY = 86400000;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const nf = new Intl.NumberFormat();
+
+const S = {
+  token: null, org: null, domain: null,
+  busy: false, runSeq: 0,
+  msIds: null,            // { offered: id, none: id, 1..5: id }
+  msMissing: [],
+  range: null,            // { startMs, endMs }
+  counts: null,           // { offered, none, 1..5 }
+  drillKey: null,
+  drill: new Map(),       // key -> { status, rows[], note }
+  tx: new Map(),          // conversationId -> { open, html }
+  preset: '7',
+};
+
+/* ---------- messages ---------- */
+function showMsg(text, kind = 'error') { const m = $('msg'); m.className = 'msg ' + kind; m.textContent = text; m.hidden = false; }
+function clearMsg() { $('msg').hidden = true; $('msg').textContent = ''; }
+
+/* ---------- config ---------- */
+function loadCfg() { try { return JSON.parse(localStorage.getItem(K.cfg) || '{}'); } catch { return {}; } }
+function saveCfg() { localStorage.setItem(K.cfg, JSON.stringify({ clientId: $('clientId').value.trim(), domain: $('region').value })); }
+
+/* ---------- PKCE ---------- */
+function b64url(buf) { let s = ''; new Uint8Array(buf).forEach((b) => (s += String.fromCharCode(b))); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); }
+function randomString(len) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const a = new Uint8Array(len); crypto.getRandomValues(a);
+  return Array.from(a, (x) => chars[x % chars.length]).join('');
+}
+async function pkcePair() {
+  const verifier = randomString(96);
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
+  return { verifier, challenge: b64url(hash) };
+}
+
+const loginHost = () => `login.${S.domain}`;
+const apiHost = () => `api.${S.domain}`;
+const appsHost = () => `apps.${S.domain}`;
+
+function explainAuthError(code, desc) {
+  const known = {
+    access_denied: 'Access was denied. The sign-in was cancelled, or the user/OAuth client is not permitted to authorize this app.',
+    invalid_client: 'Genesys Cloud does not recognise this client ID for the selected region. Check the client ID and that the region matches the org.',
+    invalid_request: 'Genesys Cloud rejected the sign-in request. Check the client ID and that the redirect URI is registered on the OAuth client.',
+    invalid_grant: 'The authorization code was rejected (expired, already used, or the redirect URI does not match the OAuth client).',
+    unauthorized_client: 'This OAuth client is not allowed to use the Code Authorization (PKCE) grant.',
+    invalid_scope: 'The OAuth client does not have the scopes this app needs.',
+    server_error: 'Genesys Cloud reported a server error. Try again shortly.',
+  };
+  const base = known[code] || `Sign-in error "${code}".`;
+  return desc && desc !== code ? `${base}\nDetail from Genesys Cloud: ${desc}` : base;
+}
+function describeNetworkError(e, host) {
+  if (e instanceof TypeError) return `Could not reach ${host}. Check the selected region is correct for this org and that your network or browser is not blocking the request.`;
+  return e.message || String(e);
+}
+
+/* ---------- auth ---------- */
+async function signIn() {
+  clearMsg();
+  const clientId = $('clientId').value.trim();
+  if (!clientId) return showMsg('Paste the OAuth client ID first.');
+  if (!GUID.test(clientId)) return showMsg('That does not look like a Genesys Cloud client ID (expected a GUID such as 584c1e79-568e-4d71-91ff-3e00bf01d04b).');
+  if (!window.crypto || !crypto.subtle) return showMsg('This browser context cannot do PKCE (Web Crypto unavailable). Open the page over https:// or http://localhost.');
+  if (location.protocol === 'file:') return showMsg('Genesys Cloud cannot redirect back to a file:// page. Host this file on https:// or http://localhost and register that URL as the redirect URI.');
+  saveCfg();
+  S.domain = $('region').value;
+  const { verifier, challenge } = await pkcePair();
+  const state = randomString(32);
+  sessionStorage.setItem(K.verifier, verifier);
+  sessionStorage.setItem(K.state, state);
+  const u = new URL(`https://${loginHost()}/oauth/authorize`);
+  u.search = new URLSearchParams({ response_type: 'code', client_id: clientId, redirect_uri: REDIRECT_URI, code_challenge: challenge, code_challenge_method: 'S256', state }).toString();
+  $('authBtn').disabled = true; $('authBtn').textContent = 'Redirecting…';
+  location.href = u.toString();
+}
+
+async function tokenRequest(params) {
+  let res;
+  try {
+    res = await fetch(`https://${loginHost()}/oauth/token`, { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(params) });
+  } catch (e) { throw new Error(describeNetworkError(e, loginHost())); }
+  let data = {}; try { data = await res.json(); } catch { /* ignore */ }
+  if (!res.ok) {
+    const code = data.error || ''; const desc = data.error_description || data.message || '';
+    throw new Error(code ? explainAuthError(code, desc) : (desc || `Token request failed (HTTP ${res.status}).`));
+  }
+  return data;
+}
+async function refreshToken() {
+  const rt = S.token && S.token.refresh_token;
+  if (!rt) throw new Error('Session expired. Please sign in again.');
+  const data = await tokenRequest({ grant_type: 'refresh_token', client_id: $('clientId').value.trim(), refresh_token: rt });
+  S.token = { ...S.token, ...data };
+  sessionStorage.setItem(K.token, JSON.stringify(S.token));
+}
+async function api(path, opts = {}, tries = 0, refreshed = false) {
+  if (!S.token) throw new Error('Not signed in.');
+  let res;
+  try {
+    res = await fetch(`https://${apiHost()}${path}`, { ...opts, headers: { Authorization: `Bearer ${S.token.access_token}`, 'Content-Type': 'application/json', ...(opts.headers || {}) } });
+  } catch (e) { throw new Error(describeNetworkError(e, apiHost())); }
+  if (res.status === 401 && !refreshed) {
+    try { await refreshToken(); } catch (e) { sessionExpired(); throw new Error('Your session has expired. Please sign in again.'); }
+    return api(path, opts, tries, true);
+  }
+  if (res.status === 429 && tries < 6) {
+    const wait = (parseFloat(res.headers.get('Retry-After')) || 2) * 1000;
+    await sleep(wait);
+    return api(path, opts, tries + 1, refreshed);
+  }
+  const text = await res.text();
+  let data = null; try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+  if (!res.ok) {
+    const e = new Error((data && (data.message || data.error_description || data.error)) || `Request failed (HTTP ${res.status}).`);
+    e.status = res.status; e.code = data && data.code; throw e;
+  }
+  return data;
+}
+
+async function completeSignInFromRedirect() {
+  const p = new URLSearchParams(location.search);
+  if (!p.has('code') && !p.has('error')) return false;
+  history.replaceState({}, document.title, location.pathname);
+  try {
+    if (p.get('error')) throw new Error(explainAuthError(p.get('error'), p.get('error_description')));
+    if (!p.get('code')) throw new Error('Genesys Cloud did not return an authorization code.');
+    if (p.get('state') !== sessionStorage.getItem(K.state)) throw new Error('The sign-in response did not match this browser session (state check failed). Please try again.');
+    const verifier = sessionStorage.getItem(K.verifier);
+    if (!verifier) throw new Error('The PKCE verifier was lost (the browser session was cleared). Please try again.');
+    S.token = await tokenRequest({ grant_type: 'authorization_code', client_id: $('clientId').value.trim(), code: p.get('code'), redirect_uri: REDIRECT_URI, code_verifier: verifier });
+    sessionStorage.setItem(K.token, JSON.stringify(S.token));
+    await loadOrg();
+    return true;
+  } catch (e) {
+    clearSession();
+    showMsg('Sign-in failed: ' + e.message);
+    return true;
+  } finally {
+    sessionStorage.removeItem(K.verifier); sessionStorage.removeItem(K.state);
+  }
+}
+async function loadOrg() {
+  try { const org = await api('/api/v2/organizations/me'); S.org = org.thirdPartyOrgName || org.name || org.id; }
+  catch (e) { throw new Error('Signed in, but the organization could not be read: ' + e.message); }
+}
+async function restoreSession() {
+  try { S.token = JSON.parse(sessionStorage.getItem(K.token) || 'null'); } catch { S.token = null; }
+  if (!S.token) return;
+  try { await loadOrg(); } catch (e) { clearSession(); showMsg('Your previous session is no longer valid. Please sign in again.', 'warn'); }
+}
+function clearSession() {
+  S.token = null; S.org = null; S.runSeq++; S.busy = false; S.msIds = null; S.counts = null; S.drill = new Map(); S.tx = new Map(); S.drillKey = null;
+  sessionStorage.removeItem(K.token);
+  renderAll();
+}
+function sessionExpired() { clearSession(); showMsg('Your session has expired. Please sign in again.', 'warn'); }
+async function signOut() {
+  clearMsg();
+  const t = S.token;
+  if (t) { try { await fetch(`https://${apiHost()}/api/v2/tokens/me`, { method: 'DELETE', headers: { Authorization: `Bearer ${t.access_token}` } }); } catch { /* best effort */ } }
+  clearSession();
+}
+
+/* ---------- Architect lookups ---------- */
+async function resolveMilestones() {
+  if (S.msIds) return S.msIds;
+  const want = new Map(Object.entries(MS).map(([k, n]) => [n.toLowerCase(), k]));
+  const found = {};
+  const scan = async (extra) => {
+    for (let page = 1; page <= 30; page++) {
+      const q = new URLSearchParams({ pageSize: '100', pageNumber: String(page), ...extra });
+      const r = await api(`/api/v2/flows/milestones?${q}`);
+      (r.entities || []).forEach((m) => { const k = want.get(String(m.name || '').toLowerCase()); if (k && !found[k] && m.division !== 'deleted' && m.state !== 'deleted') found[k] = m.id; });
+      if (!r.pageCount || page >= r.pageCount) break;
+    }
+  };
+  try { await scan({ nameOrDescription: 'PreQueueSurvey' }); } catch (e) { if (e.status !== 400) throw e; }
+  if (Object.keys(found).length < want.size) await scan({});
+  S.msIds = found;
+  S.msMissing = Object.entries(MS).filter(([k]) => !found[k]).map(([, n]) => n);
+  return found;
+}
+
+/* ---------- counts ---------- */
+function windows(startMs, endMs) {
+  const out = []; const step = 30 * DAY;
+  for (let s = startMs; s < endMs; s += step) out.push([s, Math.min(s + step, endMs)]);
+  return out;
+}
+const isoRange = (a, b) => `${new Date(a).toISOString()}/${new Date(b).toISOString()}`;
+
+async function aggregate(startMs, endMs, groupBy, ids) {
+  const body = { interval: isoRange(startMs, endMs), groupBy, metrics: ['oFlowMilestone'] };
+  if (ids && ids.length) body.filter = { type: 'or', predicates: ids.map((id) => ({ type: 'dimension', dimension: 'flowMilestoneId', operator: 'matches', value: id })) };
+  return api('/api/v2/analytics/flows/aggregates/query', { method: 'POST', body: JSON.stringify(body) });
+}
+function statCount(res) {
+  let n = 0;
+  ((res && res.results) || []).forEach((g) => (g.data || []).forEach((d) => (d.metrics || []).forEach((m) => {
+    if (m.metric === 'oFlowMilestone') n += Math.round((m.stats && (m.stats.count ?? m.stats.sum)) || 0);
+  })));
+  return n;
+}
+
+async function fetchCounts(startMs, endMs, seq) {
+  const ids = S.msIds; const idList = Object.values(ids);
+  const counts = { offered: 0, none: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  const byId = new Map(Object.entries(ids).map(([k, id]) => [id, k]));
+  for (const [a, b] of windows(startMs, endMs)) {
+    if (seq !== S.runSeq) return null;
+    let res;
+    try { res = await aggregate(a, b, ['flowMilestoneId'], idList); }
+    catch (e) { if (e.status === 400) res = await aggregate(a, b, ['flowMilestoneId'], null); else throw e; }
+    ((res && res.results) || []).forEach((g) => {
+      const k = byId.get(g.group && g.group.flowMilestoneId); if (!k) return;
+      counts[k] += statCount({ results: [g] });
+    });
+  }
+  return counts;
+}
+
+/* ---------- drill-down ---------- */
+// Strategy A: flow aggregates grouped by conversationId + milestone (near-real-time).
+// Strategy B: conversation details job filtered by milestone (lags real time by ~12-48h).
+async function idsViaAggregates(key, startMs, endMs, seq) {
+  const id = S.msIds[key]; const set = new Set();
+  for (const [a, b] of windows(startMs, endMs)) {
+    if (seq !== S.runSeq) return null;
+    const res = await aggregate(a, b, ['conversationId', 'flowMilestoneId'], [id]);
+    ((res && res.results) || []).forEach((g) => { const c = g.group && g.group.conversationId; if (c && g.group.flowMilestoneId === id) set.add(c); });
+  }
+  return [...set];
+}
+
+const FAILED_STATES = new Set(['FAILED', 'FAULTED', 'CANCELLED', 'CANCELED', 'EXPIRED']);
+async function runJob(bodyExtra, seq) {
+  const job = await api('/api/v2/analytics/conversations/details/jobs', { method: 'POST', body: JSON.stringify({ order: 'asc', orderBy: 'conversationStart', ...bodyExtra }) });
+  const jobId = job && (job.jobId || job.id);
+  if (!jobId) throw new Error('The analytics job was created but no job ID was returned.');
+  const t0 = Date.now(); let delay = 1000;
+  for (;;) {
+    if (seq !== S.runSeq) return null;
+    const st = await api(`/api/v2/analytics/conversations/details/jobs/${encodeURIComponent(jobId)}`);
+    const state = String((st && st.state) || '').toUpperCase();
+    if (state === 'FULFILLED') break;
+    if (FAILED_STATES.has(state)) throw new Error(`The analytics job ended in state ${state}${st.errorMessage ? ': ' + st.errorMessage : ''}.`);
+    if (Date.now() - t0 > 5 * 60 * 1000) throw new Error('Timed out waiting for the analytics job (5 minutes).');
+    await sleep(delay); delay = Math.min(delay + 500, 4000);
+  }
+  const convs = []; let cursor = null;
+  do {
+    if (seq !== S.runSeq) return null;
+    const q = new URLSearchParams({ pageSize: '500' }); if (cursor) q.set('cursor', cursor);
+    const page = await api(`/api/v2/analytics/conversations/details/jobs/${encodeURIComponent(jobId)}/results?${q}`);
+    (page.conversations || []).forEach((c) => convs.push(c));
+    cursor = page.cursor || null;
+  } while (cursor);
+  return convs;
+}
+async function convsViaJobByMilestone(key, startMs, endMs, seq) {
+  const id = S.msIds[key]; const all = [];
+  for (const [a, b] of windows(startMs, endMs)) {
+    const r = await runJob({ interval: isoRange(a, b), segmentFilters: [{ type: 'and', predicates: [{ type: 'dimension', dimension: 'flowMilestoneId', operator: 'matches', value: id }] }] }, seq);
+    if (!r) return null; all.push(...r);
+  }
+  return all;
+}
+async function enrichIds(ids, startMs, endMs, seq, onProgress) {
+  const out = new Map();
+  // 1) async job in chunks (full range)
+  for (let i = 0; i < ids.length; i += 100) {
+    if (seq !== S.runSeq) return null;
+    const chunk = ids.slice(i, i + 100);
+    try {
+      for (const [a, b] of windows(startMs, endMs)) {
+        const r = await runJob({ interval: isoRange(a, b), conversationFilters: [{ type: 'or', predicates: chunk.map((v) => ({ type: 'dimension', dimension: 'conversationId', operator: 'matches', value: v })) }] }, seq);
+        if (!r) return null; r.forEach((c) => out.set(c.conversationId, c));
+      }
+    } catch (e) { /* fall through to the per-interaction lookup */ }
+    onProgress(Math.min(out.size, ids.length), ids.length);
+  }
+  // 2) near-real-time per-interaction lookup for anything the job has not caught up with yet
+  const missing = ids.filter((id) => !out.has(id)); let next = 0;
+  const worker = async () => {
+    while (next < missing.length) {
+      if (seq !== S.runSeq) return;
+      const id = missing[next++];
+      try { const c = await api(`/api/v2/analytics/conversations/${encodeURIComponent(id)}/details`); if (c) out.set(id, c); } catch { /* leave as ID only */ }
+      onProgress(out.size, ids.length);
+    }
+  };
+  await Promise.all(Array.from({ length: 4 }, worker));
+  return out;
+}
+
+function rowFrom(id, c) {
+  const r = { id, start: '', end: '', dir: '', ani: '', dnis: '', durMs: null, sessions: [] };
+  if (!c) return r;
+  r.start = c.conversationStart || ''; r.end = c.conversationEnd || '';
+  r.dir = c.originatingDirection || '';
+  const ps = c.participants || [];
+  const cust = ps.find((p) => p.purpose === 'customer' || p.purpose === 'external') || ps[0];
+  const s0 = cust && cust.sessions && cust.sessions[0];
+  if (s0) { r.ani = (s0.ani || '').replace(/^tel:/, ''); r.dnis = (s0.dnis || '').replace(/^tel:/, ''); }
+  ps.forEach((p) => (p.sessions || []).forEach((s) => { if (s.sessionId) r.sessions.push(s.sessionId); }));
+  const a = Date.parse(r.start), b = Date.parse(r.end);
+  if (!Number.isNaN(a) && !Number.isNaN(b)) r.durMs = b - a;
+  return r;
+}
+
+async function openDrill(key) {
+  if (!S.counts || !S.msIds || !S.msIds[key]) return;
+  S.drillKey = key; renderScores(); renderDrill();
+  $('drill').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const cached = S.drill.get(key);
+  if (cached && cached.rangeKey === rangeKey() && cached.status !== 'error') return;
+  const seq = S.runSeq; const { startMs, endMs } = S.range;
+  const entry = { status: 'loading', rows: [], note: 'Finding interactions…', rangeKey: rangeKey() };
+  S.drill.set(key, entry); renderDrill();
+  try {
+    let ids = null; let convs = null; let via = '';
+    try { ids = await idsViaAggregates(key, startMs, endMs, seq); via = 'flow aggregates'; } catch (e) { ids = null; entry.aggErr = e.message; }
+    if (seq !== S.runSeq) return;
+    if (ids && ids.length) {
+      entry.note = `Found ${nf.format(ids.length)} interaction${ids.length === 1 ? '' : 's'}; loading details…`; renderDrill();
+      const m = await enrichIds(ids, startMs, endMs, seq, (d, t) => { entry.note = `Loading interaction details… ${nf.format(d)} of ${nf.format(t)}`; if (S.drillKey === key) renderDrill(); });
+      if (!m || seq !== S.runSeq) return;
+      entry.rows = ids.map((id) => rowFrom(id, m.get(id)));
+    } else {
+      entry.note = 'Searching conversation details (this can take a minute)…'; renderDrill();
+      try { convs = await convsViaJobByMilestone(key, startMs, endMs, seq); }
+      catch (e) { throw new Error(`Could not list the interactions for this score.\n${entry.aggErr ? 'Flow aggregates: ' + entry.aggErr + '\n' : ''}Conversation details: ${e.message}`); }
+      if (!convs || seq !== S.runSeq) return;
+      entry.rows = convs.map((c) => rowFrom(c.conversationId, c));
+      via = 'conversation details';
+    }
+    entry.rows.sort((a, b) => (b.start || '').localeCompare(a.start || ''));
+    entry.status = 'done'; entry.note = '';
+    entry.via = via;
+  } catch (e) {
+    entry.status = 'error'; entry.note = e.message;
+  }
+  if (seq === S.runSeq && S.drillKey === key) renderDrill();
+}
+
+/* ---------- transcripts ---------- */
+const interactionUrl = (id) => `https://${appsHost()}/directory/#/engage/admin/interactions/${encodeURIComponent(id)}`;
+
+function phrasesFrom(json) {
+  const out = [];
+  const walk = (o) => {
+    if (!o || typeof o !== 'object') return;
+    if (Array.isArray(o)) { o.forEach(walk); return; }
+    const text = o.text || o.transcript || (Array.isArray(o.words) ? null : null);
+    const who = o.participantPurpose || o.participant || o.channel || o.speaker || '';
+    if (typeof o.text === 'string' && o.text.trim()) out.push({ who: String(who), text: o.text.trim(), t: o.startTimeMs ?? o.offsetMs ?? 0 });
+    else if (typeof text === 'string' && text.trim() && (o.participantPurpose || o.channel)) out.push({ who: String(who), text: text.trim(), t: 0 });
+    Object.values(o).forEach((v) => { if (v && typeof v === 'object') walk(v); });
+  };
+  walk(json);
+  return out;
+}
+async function loadTranscript(id) {
+  const t = S.tx.get(id) || {};
+  if (t.open) { t.open = false; S.tx.set(id, t); renderDrill(); return; }
+  t.open = true; t.html = '<span class="spinner"></span>Looking for a transcript…'; S.tx.set(id, t); renderDrill();
+  const row = ((S.drill.get(S.drillKey) || {}).rows || []).find((r) => r.id === id);
+  const sessions = (row && row.sessions) || [];
+  let lines = null; let lastErr = '';
+  for (const sid of sessions) {
+    try {
+      const r = await api(`/api/v2/speechandtextanalytics/conversations/${encodeURIComponent(id)}/communications/${encodeURIComponent(sid)}/transcripturl`);
+      const url = r && (r.url || r.transcriptUrl); if (!url) continue;
+      const res = await fetch(url);
+      if (!res.ok) { lastErr = `HTTP ${res.status} fetching transcript file`; continue; }
+      const p = phrasesFrom(await res.json());
+      if (p.length) { lines = p; break; }
+    } catch (e) { lastErr = e.status ? `HTTP ${e.status}: ${e.message}` : (e instanceof TypeError ? 'the browser blocked the transcript download (CORS)' : e.message); if (e.status === 403) break; }
+  }
+  if (lines) {
+    t.html = lines.sort((a, b) => a.t - b.t).map((l) => `<div class="line"><span class="who ${/cust|external/i.test(l.who) ? 'customer' : ''}">${esc(l.who || 'Speaker')}</span><span>${esc(l.text)}</span></div>`).join('');
+  } else {
+    t.html = `<div class="none">No transcript could be loaded here${lastErr ? ' (' + esc(lastErr) + ')' : ''}. Pre-queue IVR interactions often have no transcript; speech and text analytics must be enabled for the call. <a class="lnk" href="${esc(interactionUrl(id))}" target="_blank" rel="noopener">Open the interaction in Genesys Cloud</a> to check its Transcript tab.</div>`;
+  }
+  S.tx.set(id, t);
+  if (S.tx.get(id).open) renderDrill();
+}
+
+/* ---------- dates ---------- */
+const pad = (n) => String(n).padStart(2, '0');
+const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseYmd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+function applyPreset(p) {
+  const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  let from = today, to = today;
+  if (p === 'yesterday') { from = to = new Date(today.getTime() - DAY); }
+  else if (p === '7') from = new Date(today.getTime() - 6 * DAY);
+  else if (p === '30') from = new Date(today.getTime() - 29 * DAY);
+  else if (p === 'month') from = new Date(today.getFullYear(), today.getMonth(), 1);
+  else if (p === 'lastmonth') { from = new Date(today.getFullYear(), today.getMonth() - 1, 1); to = new Date(today.getFullYear(), today.getMonth(), 0); }
+  $('fromDate').value = ymd(from); $('toDate').value = ymd(to);
+  S.preset = p; markPresets();
+}
+function markPresets() { document.querySelectorAll('#presets .chip').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === S.preset))); }
+function readRange() {
+  const f = $('fromDate').value, t = $('toDate').value;
+  if (!f || !t) throw new Error('Choose both a From and a To date.');
+  const startMs = parseYmd(f).getTime();
+  const endMs = Math.min(parseYmd(t).getTime() + DAY, Date.now());
+  if (endMs <= startMs) throw new Error('The To date must be on or after the From date (and not entirely in the future).');
+  if (endMs - startMs > 366 * DAY) throw new Error('Please choose a range of 12 months or less.');
+  return { startMs, endMs, from: f, to: t };
+}
+const rangeKey = () => (S.range ? `${S.range.startMs}-${S.range.endMs}` : '');
+const fmtDay = (ms) => new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+function fmtTime(iso) {
+  const d = new Date(iso); if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleString(undefined, { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+function fmtDur(ms) {
+  if (ms === null || ms === undefined) return '';
+  const s = Math.round(ms / 1000); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60;
+  return h ? `${h}h ${pad(m)}m ${pad(x)}s` : `${m}m ${pad(x)}s`;
+}
+
+/* ---------- run ---------- */
+async function run() {
+  clearMsg();
+  if (S.busy) return;
+  let rng; try { rng = readRange(); } catch (e) { return showMsg(e.message); }
+  S.busy = true; const seq = ++S.runSeq;
+  S.range = rng; S.counts = null; S.drillKey = null; S.drill = new Map(); S.tx = new Map();
+  renderAll();
+  $('status').innerHTML = '<span class="spinner"></span>Looking up the survey milestones…';
+  try {
+    await resolveMilestones();
+    if (seq !== S.runSeq) return;
+    if (!S.msIds.offered) throw new Error(`The milestone ${MS.offered} could not be found in Architect. Check the name, and that the signed-in user and OAuth client can read flow milestones.`);
+    $('status').innerHTML = '<span class="spinner"></span>Counting survey results…';
+    const counts = await fetchCounts(rng.startMs, rng.endMs, seq);
+    if (!counts || seq !== S.runSeq) return;
+    S.counts = counts;
+    $('status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+  } catch (e) {
+    if (seq === S.runSeq) { $('status').textContent = ''; showMsg('Could not get survey results: ' + e.message + (e.status === 403 ? '\nThe signed-in user and OAuth client need permission to read analytics flow aggregates and Architect milestones.' : '')); }
+  } finally { if (seq === S.runSeq) { S.busy = false; renderAll(); } }
+}
+
+/* ---------- render ---------- */
+const pct = (n, d) => (d > 0 ? (n / d) * 100 : 0);
+const pctTxt = (n, d) => (d > 0 ? `${pct(n, d).toFixed(1)}%` : '–');
+
+function renderScores() {
+  const c = S.counts; if (!c) return;
+  $('scores').innerHTML = KEYS.map((k) => {
+    const n = c[k] || 0; const has = !!(S.msIds && S.msIds[k]);
+    const stars = k === 'none' ? '—' : '★'.repeat(Number(k)) + '<span style="opacity:.25">' + '★'.repeat(5 - Number(k)) + '</span>';
+    return `<button class="score s${k === 'none' ? 0 : k}" type="button" data-k="${k}" aria-pressed="${S.drillKey === k}" ${has && n > 0 ? '' : 'disabled'} title="${has ? '' : 'Milestone not found in Architect'}">
+      <div class="star"><span>${esc(LABEL[k])}</span><span class="stars">${stars}</span></div>
+      <div class="n">${nf.format(n)}</div>
+      <div class="pct">${pctTxt(n, c.offered)} of offered</div>
+      <div class="meter"><i style="width:${Math.min(100, pct(n, c.offered)).toFixed(1)}%"></i></div>
+      <div class="go">${has && n > 0 ? 'View interactions ›' : (has ? 'None in range' : 'Not found')}</div>
+    </button>`;
+  }).join('');
+}
+
+function renderDash() {
+  const c = S.counts; const dash = $('dash');
+  dash.hidden = !c; dash.style.display = c ? 'grid' : 'none';
+  if (!c) return;
+  const sameDay = S.range.from === S.range.to;
+  $('offeredN').textContent = nf.format(c.offered);
+  $('rangeLbl').textContent = sameDay ? fmtDay(S.range.startMs) : `${fmtDay(S.range.startMs)} – ${fmtDay(S.range.endMs - 1)}`;
+  const scored = [1, 2, 3, 4, 5].reduce((s, k) => s + c[k], 0);
+  const responded = scored;
+  $('kRate').textContent = pctTxt(responded, c.offered);
+  $('kRateH').textContent = `${nf.format(responded)} of ${nf.format(c.offered)} gave a score`;
+  const sum = [1, 2, 3, 4, 5].reduce((s, k) => s + k * c[k], 0);
+  $('kAvg').textContent = scored ? (sum / scored).toFixed(2) : '–';
+  const pos = c[4] + c[5];
+  $('kPos').textContent = pctTxt(pos, scored);
+  $('kPosH').textContent = scored ? `${nf.format(pos)} of ${nf.format(scored)} scores` : 'no scores yet';
+
+  const total = Math.max(c.offered, scored + c.none, 1);
+  const unacc = Math.max(0, c.offered - scored - c.none);
+  const parts = [...[1, 2, 3, 4, 5].map((k) => [k, c[k]]), ['none', c.none], ['x', unacc]];
+  $('stack').innerHTML = parts.map(([k, n]) => `<div style="width:${(n / total * 100).toFixed(3)}%;background:${k === 'x' ? '#D9DEEA' : COLOR[k]}" title="${k === 'x' ? 'Not yet resolved' : LABEL[k]}: ${nf.format(n)}"></div>`).join('');
+  $('legend').innerHTML = parts.filter(([, n]) => n > 0).map(([k, n]) => `<span><i style="background:${k === 'x' ? '#D9DEEA' : COLOR[k]}"></i>${k === 'x' ? 'Not yet resolved' : esc(LABEL[k])}: ${nf.format(n)}</span>`).join('') || '<span>No surveys offered in this range.</span>';
+  renderScores();
+
+  const rec = $('recon'); const notes = [];
+  if (S.msMissing.length) notes.push(`These milestones were not found in Architect, so their counts show as zero: ${S.msMissing.join(', ')}.`);
+  if (c.offered && scored + c.none !== c.offered) {
+    const diff = c.offered - scored - c.none;
+    notes.push(diff > 0 ? `${nf.format(diff)} offered survey${diff === 1 ? ' has' : 's have'} no recorded result yet (still in progress, abandoned mid-survey, or the flow ended before a result milestone was reached).` : `Scores and no-responses total ${nf.format(-diff)} more than the number offered. A call may have passed through more than one result milestone.`);
+  }
+  rec.textContent = notes.join('\n'); rec.hidden = !notes.length;
+}
+
+function renderDrill() {
+  const sec = $('drill'); const k = S.drillKey;
+  sec.hidden = !k; if (!k) return;
+  const e = S.drill.get(k) || { status: 'loading', rows: [], note: '' };
+  $('drillTitle').innerHTML = `<span class="pill" style="background:${COLOR[k]}"></span>${esc(LABEL[k])} interactions`;
+  const q = $('drillSearch').value.trim().toLowerCase();
+  const rows = e.rows.filter((r) => !q || r.id.toLowerCase().includes(q) || r.ani.toLowerCase().includes(q) || r.dnis.toLowerCase().includes(q));
+  $('drillStat').innerHTML = e.status === 'loading' ? `<span class="spinner"></span>${esc(e.note)}` : (e.status === 'done' ? `${nf.format(rows.length)}${q ? ' matching' : ''} of ${nf.format(e.rows.length)}${S.counts && S.counts[k] !== e.rows.length ? ` (milestone fired ${nf.format(S.counts[k])} times)` : ''}` : '');
+  $('drillCsv').disabled = e.status !== 'done' || !e.rows.length;
+  const empty = $('drillEmpty');
+  if (e.status === 'error') { empty.hidden = false; empty.style.whiteSpace = 'pre-wrap'; empty.style.color = 'var(--red)'; empty.textContent = e.note; }
+  else if (e.status === 'done' && !rows.length) { empty.hidden = false; empty.style.color = ''; empty.textContent = q ? 'No interactions match that filter.' : 'No interactions were returned for this score in the selected range.'; }
+  else empty.hidden = true;
+  $('drillRows').innerHTML = rows.map((r) => {
+    const t = S.tx.get(r.id);
+    const main = `<tr>
+      <td class="time">${esc(fmtTime(r.start)) || '<span class="stat">pending</span>'}</td>
+      <td class="cid"><span>${esc(r.id)}</span><button type="button" data-copy="${esc(r.id)}" title="Copy ID" aria-label="Copy interaction ID">⧉</button></td>
+      <td>${esc(r.dir)}</td><td>${esc(r.ani)}</td><td>${esc(r.dnis)}</td><td>${esc(fmtDur(r.durMs))}</td>
+      <td><div class="acts"><a class="lnk" href="${esc(interactionUrl(r.id))}" target="_blank" rel="noopener">Interaction ↗</a><button class="linkbtn" type="button" data-tx="${esc(r.id)}">${t && t.open ? 'Hide transcript' : 'Transcript'}</button></div></td></tr>`;
+    return main + (t && t.open ? `<tr class="tx"><td colspan="7">${t.html}</td></tr>` : '');
+  }).join('');
+}
+
+function renderAll() {
+  const on = !!S.token;
+  $('authBtn').textContent = on ? 'Sign out' : 'Sign in to Genesys Cloud';
+  $('authBtn').disabled = false;
+  $('clientId').disabled = on; $('region').disabled = on;
+  $('orgBadge').hidden = !on; if (on) $('orgName').textContent = S.org || '';
+  $('welcome').hidden = on;
+  const ws = $('workspace'); ws.hidden = !on; ws.style.display = on ? 'grid' : 'none';
+  $('goBtn').disabled = S.busy;
+  if (!on) { $('dash').hidden = true; $('drill').hidden = true; return; }
+  renderDash(); renderDrill();
+}
+
+/* ---------- CSV ---------- */
+const csvCell = (v) => { const s = String(v ?? ''); return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function downloadDrillCsv() {
+  const k = S.drillKey; const e = S.drill.get(k); if (!e || !e.rows.length) return;
+  const head = ['Score', 'Interaction ID', 'Started', 'Ended', 'Direction', 'ANI', 'DNIS', 'Duration (s)', 'Interaction link'];
+  const body = e.rows.map((r) => [LABEL[k], r.id, r.start, r.end, r.dir, r.ani, r.dnis, r.durMs === null ? '' : Math.round(r.durMs / 1000), interactionUrl(r.id)]);
+  const text = '\ufeff' + [head, ...body].map((row) => row.map(csvCell).join(',')).join('\r\n') + '\r\n';
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
+  a.download = `prequeue_survey_${k === 'none' ? 'no_response' : 'score_' + k}_${S.range.from}_to_${S.range.to}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* ---------- events ---------- */
+function wire() {
+  $('authBtn').addEventListener('click', () => (S.token ? signOut() : signIn().catch((e) => { $('authBtn').disabled = false; showMsg(e.message); })));
+  $('clientId').addEventListener('input', saveCfg);
+  $('region').addEventListener('change', saveCfg);
+  $('clientId').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('authBtn').click(); });
+  $('goBtn').addEventListener('click', run);
+  $('presets').addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (!b) return; applyPreset(b.dataset.p); run(); });
+  ['fromDate', 'toDate'].forEach((id) => $(id).addEventListener('change', () => { S.preset = ''; markPresets(); }));
+  $('scores').addEventListener('click', (e) => { const b = e.target.closest('.score'); if (!b || b.disabled) return; openDrill(b.dataset.k); });
+  $('drillClose').addEventListener('click', () => { S.drillKey = null; renderScores(); renderDrill(); });
+  $('drillSearch').addEventListener('input', renderDrill);
+  $('drillCsv').addEventListener('click', downloadDrillCsv);
+  $('drillRows').addEventListener('click', (e) => {
+    const c = e.target.closest('[data-copy]'); if (c) { navigator.clipboard && navigator.clipboard.writeText(c.dataset.copy); c.textContent = '✓'; setTimeout(() => (c.textContent = '⧉'), 1200); return; }
+    const t = e.target.closest('[data-tx]'); if (t) loadTranscript(t.dataset.tx);
+  });
+}
+
+/* ---------- boot ---------- */
+async function init() {
+  const sel = $('region');
+  sel.innerHTML = REGIONS.map(([label, dom]) => `<option value="${dom}">${esc(label)}</option>`).join('');
+  const cfg = loadCfg();
+  if (cfg.clientId) $('clientId').value = cfg.clientId;
+  if (cfg.domain && REGIONS.some(([, d]) => d === cfg.domain)) sel.value = cfg.domain;
+  S.domain = sel.value;
+  $('redirectUri').textContent = REDIRECT_URI;
+  applyPreset('7');
+  wire();
+  renderAll();
+  const handled = await completeSignInFromRedirect();
+  if (!handled) { await restoreSession(); }
+  S.domain = $('region').value;
+  renderAll();
+  if (S.token) run();
+}
+init();
+})();
+</script>
+</body>
+</html>
