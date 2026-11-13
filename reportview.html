@@ -272,16 +272,55 @@
   .linkbtn { font: inherit; font-weight: 800; color: var(--blue); background: none; border: 0; padding: 0; cursor: pointer; }
   .linkbtn:hover { text-decoration: underline; }
   .search { font: inherit; font-size: 13.5px; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--navy); width: 220px; }
-  .tx { background: #F7FAFD; }
-  .tx td { padding: 12px 18px 16px 34px; }
-  .tx .line { display: grid; grid-template-columns: 90px 1fr; gap: 10px; padding: 3px 0; font-size: 13px; }
-  .tx .who { font-weight: 800; color: var(--blue); }
-  .tx .who.customer { color: var(--orange-ink); }
-  .tx .none { color: var(--mute); font-size: 13px; }
   .stat { font-size: 12.5px; color: var(--mute); font-weight: 700; }
   .banner { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .setup { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 18px 20px; font-size: 13.5px; color: var(--mute); line-height: 1.55; }
   .setup code { background: #EEF1F8; color: var(--navy); padding: 1px 6px; border-radius: 5px; font-size: 12.5px; }
+
+  /* ---- journey modal ---- */
+  .modal { position: fixed; inset: 0; background: rgba(12,27,62,.6); display: none; place-items: center; z-index: 50; padding: 20px; }
+  .modal.open { display: grid; }
+  .sheet { background: var(--paper); border-radius: 24px; width: min(860px, 100%); max-height: calc(100vh - 40px); display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 30px 80px rgba(12,27,62,.5); }
+  .sheet-head { background: var(--navy); color: #fff; padding: 18px 22px 16px; position: relative; overflow: hidden; }
+  .sheet-head::after { content: ""; position: absolute; right: -70px; top: -90px; width: 230px; height: 230px; border-radius: 50%; background: var(--grad); opacity: .3; pointer-events: none; }
+  .sheet-head h2 { margin: 0 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -.01em; }
+  .sheet-head .sub { font-size: 12.5px; color: #C9D2E6; word-break: break-all; position: relative; z-index: 1; }
+  .sheet-head .facts { display: flex; gap: 8px 18px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; position: relative; z-index: 1; }
+  .sheet-head .facts b { color: #fff; } .sheet-head .facts span { color: #C9D2E6; }
+  .sheet-x { position: absolute; right: 14px; top: 14px; z-index: 2; font: inherit; font-size: 20px; line-height: 1; width: 34px; height: 34px; border-radius: 50%; border: 2px solid rgba(255,255,255,.7); background: transparent; color: #fff; cursor: pointer; }
+  .sheet-x:hover { background: rgba(255,255,255,.15); }
+  .sheet-body { overflow: auto; padding: 18px 22px 24px; display: grid; gap: 16px; }
+  .path { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 14px 16px; display: grid; gap: 8px; }
+  .path h3 { margin: 0; font-size: 12.5px; font-weight: 800; color: var(--mute); text-transform: uppercase; letter-spacing: .04em; }
+  .pathrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pathrow .arrow { color: var(--mute); font-weight: 800; }
+  .pchip { --c: var(--blue); display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; font-weight: 800; font-size: 13.5px; color: #fff; background: var(--c); }
+  .pchip.s3 { color: var(--navy); }
+  .pchip small { font-weight: 700; opacity: .85; font-size: 11.5px; }
+  .tl { position: relative; display: grid; }
+  .node { display: grid; grid-template-columns: 74px 30px minmax(0, 1fr); gap: 0 12px; position: relative; }
+  .node .when { text-align: right; padding-top: 7px; font-size: 12.5px; font-weight: 800; color: var(--navy); font-variant-numeric: tabular-nums; }
+  .node .when small { display: block; font-weight: 600; color: var(--mute); font-size: 11px; }
+  .node .rail2 { position: relative; display: flex; justify-content: center; }
+  .node .rail2::before { content: ""; position: absolute; top: 0; bottom: 0; width: 3px; background: linear-gradient(#FFB36B, #69CEEA); border-radius: 2px; }
+  .node:first-child .rail2::before { top: 14px; }
+  .node:last-child .rail2::before { bottom: calc(100% - 14px); }
+  .dot { --c: var(--blue); position: relative; z-index: 1; margin-top: 5px; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 3px solid var(--c); display: grid; place-items: center; font-size: 11px; font-weight: 800; color: var(--c); box-shadow: 0 2px 6px rgba(18,37,80,.18); }
+  .dot.fill { background: var(--c); color: #fff; }
+  .dot.s3.fill { color: var(--navy); }
+  .dot.sq { border-radius: 8px; }
+  .card2 { --c: var(--line); background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--c); border-radius: 14px; padding: 10px 14px; margin: 0 0 12px; display: grid; gap: 3px; min-width: 0; }
+  .card2 .t { font-weight: 800; font-size: 14.5px; word-break: break-word; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .card2 .m { font-size: 12px; color: var(--mute); word-break: break-word; }
+  .card2.survey { background: color-mix(in srgb, var(--c) 9%, #fff); }
+  .card2.outc { background: #F7F4F2; }
+  .kindtag { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; padding: 2px 8px; border-radius: 999px; background: #EEF1F8; color: var(--blue); }
+  .kindtag.o { background: #FFE9DE; color: var(--orange-ink); }
+  .starsrow { color: var(--c); letter-spacing: 1px; font-size: 13px; }
+  .jmsg { padding: 30px 10px; text-align: center; color: var(--mute); font-size: 14px; white-space: pre-wrap; }
+  .jmsg.err { color: var(--red); }
+  .jtools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .jnote { font-size: 12px; color: #B54708; background: #FFFAEB; border: 1px solid #FEDF89; border-radius: 12px; padding: 8px 12px; white-space: pre-wrap; }
 </style>
 </head>
 <body>
@@ -295,7 +334,7 @@
       <input type="text" id="clientId" placeholder="Paste the PKCE OAuth client ID" autocomplete="off" spellcheck="false" /></label>
     <button class="btn primary" id="authBtn" type="button">Sign in to Genesys Cloud</button>
     <p class="railnote">Region and client ID are retained in this browser; the access token is session-only.</p>
-    <p class="railnote">The OAuth client needs read access to analytics (flow aggregates and conversation details) and Architect flows (outcomes and milestones). For in-app transcripts it also needs speech and text analytics read access.</p>
+    <p class="railnote">The OAuth client needs read access to analytics (flow aggregates and conversation details) and Architect flows (outcomes and milestones).</p>
     <p class="railnote redir">Redirect URI to register on the OAuth client:<code id="redirectUri"></code></p>
   </aside>
 
@@ -383,6 +422,18 @@
   </div>
 </div>
 
+<div class="modal" id="jModal" role="dialog" aria-modal="true" aria-labelledby="jTitle">
+  <div class="sheet">
+    <div class="sheet-head">
+      <button class="sheet-x" id="jClose" type="button" aria-label="Close journey">×</button>
+      <h2 id="jTitle">Customer journey</h2>
+      <div class="sub" id="jSub"></div>
+      <div class="facts" id="jFacts"></div>
+    </div>
+    <div class="sheet-body" id="jBody"></div>
+  </div>
+</div>
+
 <script>
 (() => {
 'use strict';
@@ -434,7 +485,9 @@ const S = {
   counts: null,           // { offered, none, 1..5 }
   drillKey: null,
   drill: new Map(),       // key -> { status, rows[], note }
-  tx: new Map(),          // conversationId -> { open, html }
+  journey: new Map(),     // conversationId -> { status, events, conv, notes, error }
+  jid: null, jAll: true,
+  names: new Map(),
   preset: '7',
 };
 
@@ -576,7 +629,7 @@ async function restoreSession() {
   try { await loadOrg(); } catch (e) { clearSession(); showMsg('Your previous session is no longer valid. Please sign in again.', 'warn'); }
 }
 function clearSession() {
-  S.token = null; S.org = null; S.runSeq++; S.busy = false; S.msIds = null; S.counts = null; S.drill = new Map(); S.tx = new Map(); S.drillKey = null;
+  S.token = null; S.org = null; S.runSeq++; S.busy = false; S.msIds = null; S.counts = null; S.drill = new Map(); S.journey = new Map(); S.names = new Map(); S.jid = null; S.drillKey = null;
   sessionStorage.removeItem(K.token);
   renderAll();
 }
@@ -721,7 +774,7 @@ async function enrichIds(ids, startMs, endMs, seq, onProgress) {
 }
 
 function rowFrom(id, c) {
-  const r = { id, start: '', end: '', dir: '', ani: '', dnis: '', durMs: null, sessions: [] };
+  const r = { id, start: '', end: '', dir: '', ani: '', dnis: '', durMs: null, conv: c || null };
   if (!c) return r;
   r.start = c.conversationStart || ''; r.end = c.conversationEnd || '';
   r.dir = c.originatingDirection || '';
@@ -729,7 +782,6 @@ function rowFrom(id, c) {
   const cust = ps.find((p) => p.purpose === 'customer' || p.purpose === 'external') || ps[0];
   const s0 = cust && cust.sessions && cust.sessions[0];
   if (s0) { r.ani = (s0.ani || '').replace(/^tel:/, ''); r.dnis = (s0.dnis || '').replace(/^tel:/, ''); }
-  ps.forEach((p) => (p.sessions || []).forEach((s) => { if (s.sessionId) r.sessions.push(s.sessionId); }));
   const a = Date.parse(r.start), b = Date.parse(r.end);
   if (!Number.isNaN(a) && !Number.isNaN(b)) r.durMs = b - a;
   return r;
@@ -770,48 +822,219 @@ async function openDrill(key) {
   if (seq === S.runSeq && S.drillKey === key) renderDrill();
 }
 
-/* ---------- transcripts ---------- */
+/* ---------- customer journey ---------- */
 const interactionUrl = (id) => `https://${appsHost()}/directory/#/engage/admin/interactions/${encodeURIComponent(id)}`;
+const MSKEY = new Map(Object.entries(MS).map(([k, n]) => [n.toLowerCase(), k]));
+const msOf = (ts) => { const n = Date.parse(ts); return Number.isNaN(n) ? null : n; };
+const firstKey = (obj, test) => { const k = Object.keys(obj || {}).find(test); return k ? obj[k] : undefined; };
+const pickTime = (o) => o.timestamp || o.eventTime || firstKey(o, (k) => /time|date/i.test(k) && typeof o[k] === 'string');
+function walkMetrics(o, out, depth = 0) {
+  if (!o || typeof o !== 'object' || depth > 6) return;
+  for (const [k, v] of Object.entries(o)) {
+    if (k === 'metrics' && Array.isArray(v)) v.forEach((m) => out.push(m));
+    else if (v && typeof v === 'object') walkMetrics(v, out, depth + 1);
+  }
+}
+function sortEvents(ev) {
+  const key = (e) => (e.sortMs ?? e.ms);
+  ev.forEach((e, i) => (e._i = i));
+  ev.sort((a, b) => { const x = key(a), y = key(b); if (x === null && y === null) return a._i - b._i; if (x === null) return 1; if (y === null) return -1; return x - y || a._i - b._i; });
+  ev.forEach((e) => delete e._i);
+  return ev;
+}
+// Conversation details hold timestamped milestone *counts* (no IDs) plus the outcomes.
+function buildEvents(conv) {
+  const ev = [], metricMs = [];
+  (conv.participants || []).forEach((p) => (p.sessions || []).forEach((s) => {
+    const fl = s.flow;
+    const base = { flowName: (fl && fl.flowName) || '', flowType: (fl && fl.flowType) || '', participant: p.purpose || '' };
+    const mets = []; walkMetrics(s, mets);
+    const named = (n) => mets.filter((m) => m && m.name === n);
+    const src = named('nFlowMilestone').length ? named('nFlowMilestone') : named('oFlowMilestone');
+    src.forEach((m) => { const n = Math.max(1, Math.min(50, Math.round(Number(m.value) || 1))); for (let i = 0; i < n; i++) metricMs.push({ ...base, ts: m.emitDate || '', ms: msOf(m.emitDate) }); });
+    if (fl) (fl.outcomes || []).forEach((o) => {
+      const ts = o.flowOutcomeStartTimestamp || pickTime(o) || ''; const end = o.flowOutcomeEndTimestamp || '';
+      const a = msOf(ts), b = msOf(end);
+      ev.push({ ...base, kind: 'Outcome', id: o.flowOutcomeId || '', ts, ms: a, precision: 'exact', hint: o.flowOutcome || o.flowOutcomeName || '', value: o.flowOutcomeValue || '', end, durationMs: a !== null && b !== null ? b - a : null });
+    });
+  }));
+  metricMs.sort((x, y) => (x.ms ?? Infinity) - (y.ms ?? Infinity));
+  return { events: ev, metricMs };
+}
+// Milestone IDs come from the flow aggregates query for this one conversation (1-minute buckets), joined to the timestamps.
+async function fetchMilestoneAggregates(conv, metricMs) {
+  const t0 = [msOf(conv.conversationStart), ...metricMs.map((m) => m.ms)].filter((x) => x !== null);
+  const t1 = [msOf(conv.conversationEnd) ?? Date.now(), ...metricMs.map((m) => m.ms)].filter((x) => x !== null);
+  if (!t0.length) throw new Error('the interaction has no timestamps to search around');
+  const startB = Math.floor(Math.min(...t0) / 60000) * 60000 - 60000;
+  const endB = Math.ceil(Math.max(...t1) / 60000) * 60000 + 60000;
+  const span = endB - startB;
+  const interval = isoRange(startB, endB);
+  const filter = { type: 'and', predicates: [{ type: 'dimension', dimension: 'conversationId', operator: 'matches', value: conv.conversationId }] };
+  const attempt = (groupBy) => api('/api/v2/analytics/flows/aggregates/query', { method: 'POST', body: JSON.stringify({ interval, ...(span <= 24 * 3600000 ? { granularity: 'PT1M' } : {}), groupBy, metrics: ['oFlowMilestone'], filter }) });
+  let res;
+  try { res = await attempt(['flowMilestoneId', 'flowOutcomeId']); } catch (e) { if (e.status === 400) res = await attempt(['flowMilestoneId']); else throw e; }
+  const entries = [];
+  ((res && res.results) || []).forEach((g) => {
+    const id = g.group && g.group.flowMilestoneId; if (!id) return;
+    (g.data || []).forEach((d) => {
+      const m = (d.metrics || []).find((x) => x.metric === 'oFlowMilestone'); if (!m) return;
+      const count = Math.round((m.stats && (m.stats.count ?? m.stats.sum)) || 0); if (!count) return;
+      entries.push({ id, outcomeId: (g.group && g.group.flowOutcomeId) || '', count, bucket: msOf(String(d.interval || '').split('/')[0]) });
+    });
+  });
+  return { entries, gran: span <= 24 * 3600000 };
+}
+function joinMilestones(aggEntries, gran, metricMs) {
+  const rows = []; let approx = 0;
+  const key = (ms) => (gran && ms !== null ? Math.floor(ms / 60000) * 60000 : 'all');
+  const buckets = new Map();
+  const get = (k) => { if (!buckets.has(k)) buckets.set(k, { A: [], E: [] }); return buckets.get(k); };
+  aggEntries.forEach((a) => get(key(a.bucket)).A.push(a));
+  metricMs.forEach((m) => get(key(m.ms)).E.push(m));
+  const mk = (extra) => ({ kind: 'Milestone', value: '', end: '', durationMs: null, hint: '', ...extra });
+  for (const [k, { A, E }] of buckets) {
+    const total = A.reduce((s, a) => s + a.count, 0);
+    const ids = new Set(A.map((a) => a.id));
+    if (!A.length) { E.forEach((m) => rows.push(mk({ ...m, id: '', outcomeId: '', precision: 'exact' }))); continue; }
+    if (ids.size === 1 && E.length) {
+      const a = A[0];
+      for (let i = 0; i < Math.max(total, E.length); i++) {
+        const m = E[i];
+        if (m && i < total) rows.push(mk({ ...m, id: a.id, outcomeId: a.outcomeId, precision: 'exact' }));
+        else if (m) rows.push(mk({ ...m, id: '', outcomeId: '', precision: 'exact' }));
+        else { rows.push(mk({ ...(E[0] || {}), id: a.id, outcomeId: a.outcomeId, ts: new Date(k === 'all' ? Date.now() : k).toISOString(), ms: k === 'all' ? null : k, sortMs: (E[E.length - 1] || {}).ms ?? null, precision: 'minute' })); approx++; }
+      }
+      continue;
+    }
+    const stamp = k === 'all' ? '' : new Date(k).toISOString(); let n = 0;
+    A.forEach((a) => { for (let i = 0; i < a.count; i++) { rows.push(mk({ ...(E[0] || {}), id: a.id, outcomeId: a.outcomeId, ts: stamp, ms: k === 'all' ? null : k, sortMs: (E[n] || E[E.length - 1] || {}).ms ?? null, precision: k === 'all' ? 'unordered' : 'minute' })); n++; approx++; } });
+  }
+  return { rows, approx };
+}
+function resolveName(kind, id) {
+  if (!id) return Promise.resolve({ error: 'No ID' });
+  const key = kind + ':' + id;
+  if (!S.names.has(key)) {
+    const path = kind === 'milestone' ? `/api/v2/flows/milestones/${encodeURIComponent(id)}` : `/api/v2/flows/outcomes/${encodeURIComponent(id)}`;
+    S.names.set(key, api(path).then((d) => ({ name: d && d.name, description: d && d.description })).catch((e) => ({ error: e.message })));
+  }
+  return S.names.get(key);
+}
+async function fetchConv(id, seq) {
+  try { const c = await api(`/api/v2/analytics/conversations/${encodeURIComponent(id)}/details`); if (c) return c; }
+  catch (e) { if (e.status !== 404) throw e; }
+  for (const [a, b] of windows(S.range.startMs, S.range.endMs)) {
+    const r = await runJob({ interval: isoRange(a, b), conversationFilters: [{ type: 'and', predicates: [{ type: 'dimension', dimension: 'conversationId', operator: 'matches', value: id }] }] }, seq);
+    if (r && r.length) return r.find((c) => c.conversationId === id) || null;
+  }
+  return null;
+}
 
-function phrasesFrom(json) {
-  const out = [];
-  const walk = (o) => {
-    if (!o || typeof o !== 'object') return;
-    if (Array.isArray(o)) { o.forEach(walk); return; }
-    const text = o.text || o.transcript || (Array.isArray(o.words) ? null : null);
-    const who = o.participantPurpose || o.participant || o.channel || o.speaker || '';
-    if (typeof o.text === 'string' && o.text.trim()) out.push({ who: String(who), text: o.text.trim(), t: o.startTimeMs ?? o.offsetMs ?? 0 });
-    else if (typeof text === 'string' && text.trim() && (o.participantPurpose || o.channel)) out.push({ who: String(who), text: text.trim(), t: 0 });
-    Object.values(o).forEach((v) => { if (v && typeof v === 'object') walk(v); });
-  };
-  walk(json);
-  return out;
-}
-async function loadTranscript(id) {
-  const t = S.tx.get(id) || {};
-  if (t.open) { t.open = false; S.tx.set(id, t); renderDrill(); return; }
-  t.open = true; t.html = '<span class="spinner"></span>Looking for a transcript…'; S.tx.set(id, t); renderDrill();
-  const row = ((S.drill.get(S.drillKey) || {}).rows || []).find((r) => r.id === id);
-  const sessions = (row && row.sessions) || [];
-  let lines = null; let lastErr = '';
-  for (const sid of sessions) {
+async function buildJourney(row) {
+  const seq = S.runSeq;
+  const conv = row.conv || await fetchConv(row.id, seq);
+  if (!conv) throw new Error('The detailed record for this interaction is not available from analytics yet. Try again later, or use the Interaction link.');
+  row.conv = conv;
+  const { events: outs, metricMs } = buildEvents(conv);
+  const notes = []; let ms = [];
+  if (metricMs.length) {
     try {
-      const r = await api(`/api/v2/speechandtextanalytics/conversations/${encodeURIComponent(id)}/communications/${encodeURIComponent(sid)}/transcripturl`);
-      const url = r && (r.url || r.transcriptUrl); if (!url) continue;
-      const res = await fetch(url);
-      if (!res.ok) { lastErr = `HTTP ${res.status} fetching transcript file`; continue; }
-      const p = phrasesFrom(await res.json());
-      if (p.length) { lines = p; break; }
-    } catch (e) { lastErr = e.status ? `HTTP ${e.status}: ${e.message}` : (e instanceof TypeError ? 'the browser blocked the transcript download (CORS)' : e.message); if (e.status === 403) break; }
+      const agg = await fetchMilestoneAggregates(conv, metricMs);
+      const j = joinMilestones(agg.entries, agg.gran, metricMs); ms = j.rows;
+      if (j.approx) notes.push(`${j.approx} milestone${j.approx === 1 ? '' : 's'} could only be placed to the nearest minute (marked ≈) because analytics does not give an exact time for each milestone name.`);
+    } catch (e) {
+      ms = metricMs.map((m) => ({ ...m, kind: 'Milestone', id: '', outcomeId: '', precision: 'exact', value: '', end: '', durationMs: null, hint: '' }));
+      notes.push(`Milestone names could not be matched (${e.message}); only their timestamps are shown.`);
+    }
   }
-  if (lines) {
-    t.html = lines.sort((a, b) => a.t - b.t).map((l) => `<div class="line"><span class="who ${/cust|external/i.test(l.who) ? 'customer' : ''}">${esc(l.who || 'Speaker')}</span><span>${esc(l.text)}</span></div>`).join('');
-  } else {
-    t.html = `<div class="none">No transcript could be loaded here${lastErr ? ' (' + esc(lastErr) + ')' : ''}. Pre-queue IVR interactions often have no transcript; speech and text analytics must be enabled for the call. <a class="lnk" href="${esc(interactionUrl(id))}" target="_blank" rel="noopener">Open the interaction in Genesys Cloud</a> to check its Transcript tab.</div>`;
+  const events = sortEvents([...outs, ...ms]);
+  await Promise.all(events.flatMap((e) => [resolveName(e.kind === 'Milestone' ? 'milestone' : 'outcome', e.id), e.outcomeId ? resolveName('outcome', e.outcomeId) : null]));
+  for (const e of events) {
+    const r = await resolveName(e.kind === 'Milestone' ? 'milestone' : 'outcome', e.id);
+    e.name = r.name || e.hint || (e.kind === 'Milestone' ? 'Milestone (name not available)' : 'Outcome');
+    if (e.outcomeId) { const o = await resolveName('outcome', e.outcomeId); e.outcomeName = o.name || ''; }
+    e.sk = e.kind === 'Milestone' ? (MSKEY.get(String(e.name).toLowerCase()) || '') : '';
   }
-  S.tx.set(id, t);
-  if (S.tx.get(id).open) renderDrill();
+  return { conv, events, notes };
 }
+
+const stars = (n) => '★'.repeat(n) + '<span style="opacity:.25">' + '★'.repeat(5 - n) + '</span>';
+function fmtOff(ms, approx) {
+  if (ms === null || ms === undefined || Number.isNaN(ms)) return '–';
+  const s = Math.max(0, ms) / 1000; const t = s < 60 ? `${s.toFixed(1)}s` : `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
+  return (approx ? '≈ +' : '+') + t;
+}
+function skColor(k) { return k === 'offered' ? 'var(--blue)' : COLOR[k] || 'var(--blue)'; }
+
+function renderJourney() {
+  const id = S.jid; const modal = $('jModal');
+  modal.classList.toggle('open', !!id); if (!id) return;
+  const row = ((S.drill.get(S.drillKey) || {}).rows || []).find((r) => r.id === id) || {};
+  const j = S.journey.get(id) || { status: 'loading' };
+  $('jSub').textContent = id;
+  $('jFacts').innerHTML = [
+    row.start ? `<span>Started <b>${esc(fmtTime(row.start))}</b></span>` : '',
+    row.durMs !== null && row.durMs !== undefined ? `<span>Duration <b>${esc(fmtDur(row.durMs))}</b></span>` : '',
+    row.ani ? `<span>From <b>${esc(row.ani)}</b></span>` : '', row.dnis ? `<span>To <b>${esc(row.dnis)}</b></span>` : '',
+    `<span><a class="lnk" style="color:#8FD8F0" href="${esc(interactionUrl(id))}" target="_blank" rel="noopener">Open in Genesys Cloud ↗</a></span>`,
+  ].join('');
+  const body = $('jBody');
+  if (j.status === 'loading') { body.innerHTML = '<div class="jmsg"><span class="spinner"></span>Building the journey…</div>'; return; }
+  if (j.status === 'error') { body.innerHTML = `<div class="jmsg err">${esc(j.error)}</div>`; return; }
+
+  const startMs = msOf(row.start || (j.conv && j.conv.conversationStart));
+  const endMs = msOf(row.end || (j.conv && j.conv.conversationEnd));
+  const all = j.events; const evs = S.jAll ? all : all.filter((e) => e.sk);
+  const survey = all.filter((e) => e.sk);
+
+  let html = '';
+  if (survey.length) {
+    html += `<div class="path"><h3>Survey path</h3><div class="pathrow">${survey.map((e, i) => {
+      const k = e.sk; const isScore = /^[1-5]$/.test(k);
+      return (i ? '<span class="arrow">→</span>' : '') + `<span class="pchip s${k === 'none' ? 0 : (k === 'offered' ? '' : k)}" style="--c:${skColor(k)}">${esc(k === 'offered' ? 'Offered' : LABEL[k])}${isScore ? `<small>${'★'.repeat(Number(k))}</small>` : ''}</span>`;
+    }).join('')}</div></div>`;
+  } else html += '<div class="jnote">None of the PreQueueSurvey milestones were found on this interaction.</div>';
+  if (j.notes.length) html += `<div class="jnote">${esc(j.notes.join('\n'))}</div>`;
+  html += `<div class="jtools"><button class="chip" type="button" data-jf="all" aria-pressed="${S.jAll}">All milestones &amp; outcomes (${all.length})</button><button class="chip" type="button" data-jf="survey" aria-pressed="${!S.jAll}">Survey only (${survey.length})</button></div>`;
+
+  let prev = startMs; let n = 0;
+  const node = (when, sub, dot, card) => `<div class="node"><div class="when">${when}<small>${sub}</small></div><div class="rail2">${dot}</div>${card}</div>`;
+  let tl = node('Start', startMs ? esc(new Date(startMs).toLocaleTimeString()) : '', '<span class="dot sq fill" style="--c:var(--navy)">▶</span>', '<div class="card2" style="--c:var(--navy)"><div class="t">Interaction started</div></div>');
+  evs.forEach((e) => {
+    const approx = e.precision !== 'exact';
+    const off = e.ms !== null && startMs !== null ? e.ms - startMs : null;
+    const delta = e.ms !== null && prev !== null ? e.ms - prev : null; if (e.ms !== null) prev = e.ms;
+    const sub = delta !== null && n ? `+${(Math.max(0, delta) / 1000).toFixed(1)}s since last` : (e.ms !== null ? esc(new Date(e.ms).toLocaleTimeString()) : '');
+    n++;
+    const meta = [e.flowName, e.participant].filter(Boolean).map(esc).join(' · ');
+    if (e.kind === 'Outcome') {
+      const vcls = /succ/i.test(e.value) ? 'succ' : (/fail/i.test(e.value) ? 'fail' : 'none');
+      tl += node(fmtOff(off, approx), sub, '<span class="dot sq" style="--c:var(--orange)">◆</span>',
+        `<div class="card2 outc" style="--c:var(--orange)"><div class="t"><span class="kindtag o">Outcome</span>${esc(e.name)}${e.value ? `<span class="vab ${vcls}">${esc(e.value)}</span>` : ''}</div><div class="m">${meta}${e.durationMs !== null ? ` · lasted ${esc(fmtDur(e.durationMs))}` : ''}</div></div>`);
+    } else {
+      const k = e.sk; const col = k ? skColor(k) : 'var(--blue)';
+      const isScore = /^[1-5]$/.test(k);
+      tl += node(fmtOff(off, approx), sub, `<span class="dot ${k ? 'fill' : ''} ${k === '3' ? 's3' : ''}" style="--c:${col}">${n}</span>`,
+        `<div class="card2 ${k ? 'survey' : ''}" style="--c:${k ? col : 'var(--cyan)'}"><div class="t"><span class="kindtag">Milestone</span>${esc(e.name)}${isScore ? `<span class="starsrow" style="--c:${col}">${stars(Number(k))}</span>` : ''}</div><div class="m">${meta}${e.outcomeName ? ` · outcome: ${esc(e.outcomeName)}` : ''}${approx ? ' · time approximate' : ''}</div></div>`);
+    }
+  });
+  tl += node(endMs && startMs ? esc(fmtOff(endMs - startMs, false)) : 'End', endMs ? esc(new Date(endMs).toLocaleTimeString()) : 'still in progress', '<span class="dot sq fill" style="--c:var(--navy)">■</span>', `<div class="card2" style="--c:var(--navy)"><div class="t">${endMs ? 'Interaction ended' : 'Interaction not ended yet'}</div></div>`);
+  html += `<div class="tl">${tl}</div>`;
+  body.innerHTML = html;
+}
+
+async function openJourney(id) {
+  S.jid = id; renderJourney();
+  let j = S.journey.get(id);
+  if (j && j.status === 'done') return;
+  S.journey.set(id, { status: 'loading' });
+  const row = ((S.drill.get(S.drillKey) || {}).rows || []).find((r) => r.id === id);
+  try { const r = await buildJourney(row || { id }); S.journey.set(id, { status: 'done', ...r }); }
+  catch (e) { S.journey.set(id, { status: 'error', error: 'Could not build the journey: ' + e.message + (e.status === 403 ? '\nThe signed-in user and OAuth client need permission to read analytics and Architect flows.' : '') }); }
+  if (S.jid === id) renderJourney();
+}
+function closeJourney() { S.jid = null; $('jModal').classList.remove('open'); }
 
 /* ---------- dates ---------- */
 const pad = (n) => String(n).padStart(2, '0');
@@ -856,7 +1079,7 @@ async function run() {
   if (S.busy) return;
   let rng; try { rng = readRange(); } catch (e) { return showMsg(e.message); }
   S.busy = true; const seq = ++S.runSeq;
-  S.range = rng; S.counts = null; S.drillKey = null; S.drill = new Map(); S.tx = new Map();
+  S.range = rng; S.counts = null; S.drillKey = null; S.drill = new Map(); S.journey = new Map(); S.jid = null; closeJourney();
   renderAll();
   $('status').innerHTML = '<span class="spinner"></span>Looking up the survey milestones…';
   try {
@@ -939,13 +1162,12 @@ function renderDrill() {
   else if (e.status === 'done' && !rows.length) { empty.hidden = false; empty.style.color = ''; empty.textContent = q ? 'No interactions match that filter.' : 'No interactions were returned for this score in the selected range.'; }
   else empty.hidden = true;
   $('drillRows').innerHTML = rows.map((r) => {
-    const t = S.tx.get(r.id);
     const main = `<tr>
       <td class="time">${esc(fmtTime(r.start)) || '<span class="stat">pending</span>'}</td>
       <td class="cid"><span>${esc(r.id)}</span><button type="button" data-copy="${esc(r.id)}" title="Copy ID" aria-label="Copy interaction ID">⧉</button></td>
       <td>${esc(r.dir)}</td><td>${esc(r.ani)}</td><td>${esc(r.dnis)}</td><td>${esc(fmtDur(r.durMs))}</td>
-      <td><div class="acts"><a class="lnk" href="${esc(interactionUrl(r.id))}" target="_blank" rel="noopener">Interaction ↗</a><button class="linkbtn" type="button" data-tx="${esc(r.id)}">${t && t.open ? 'Hide transcript' : 'Transcript'}</button></div></td></tr>`;
-    return main + (t && t.open ? `<tr class="tx"><td colspan="7">${t.html}</td></tr>` : '');
+      <td><div class="acts"><a class="lnk" href="${esc(interactionUrl(r.id))}" target="_blank" rel="noopener">Interaction ↗</a><button class="linkbtn" type="button" data-j="${esc(r.id)}">Journey ›</button></div></td></tr>`;
+    return main;
   }).join('');
 }
 
@@ -987,9 +1209,13 @@ function wire() {
   $('drillClose').addEventListener('click', () => { S.drillKey = null; renderScores(); renderDrill(); });
   $('drillSearch').addEventListener('input', renderDrill);
   $('drillCsv').addEventListener('click', downloadDrillCsv);
+  $('jClose').addEventListener('click', closeJourney);
+  $('jModal').addEventListener('click', (e) => { if (e.target === $('jModal')) closeJourney(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeJourney(); });
+  $('jBody').addEventListener('click', (e) => { const b = e.target.closest('[data-jf]'); if (!b) return; S.jAll = b.dataset.jf === 'all'; renderJourney(); });
   $('drillRows').addEventListener('click', (e) => {
     const c = e.target.closest('[data-copy]'); if (c) { navigator.clipboard && navigator.clipboard.writeText(c.dataset.copy); c.textContent = '✓'; setTimeout(() => (c.textContent = '⧉'), 1200); return; }
-    const t = e.target.closest('[data-tx]'); if (t) loadTranscript(t.dataset.tx);
+    const j = e.target.closest('[data-j]'); if (j) openJourney(j.dataset.j);
   });
 }
 
